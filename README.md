@@ -17,17 +17,22 @@ Replace this paragraph with your own summary of what your version does.
 
 ## How The System Works
 
-Explain your design in plain language.
+Real-world platforms like Spotify and YouTube combine two approaches. Collaborative filtering uses the behavior of millions of users (likes, skips, replays) to recommend what similar people enjoyed. Content-based filtering compares the qualities of songs to what a user says they like. My version is a simple content-based recommender. It matches a user's taste profile against each song's qualities. Genre matters most. After that, songs score higher when their energy and mood are *close* to what the user wants, not just higher or lower.
 
-Some prompts to answer:
+**What each song has:** genre, mood, energy level, how acoustic it sounds, how happy or sad it feels, tempo, and artist.
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
+**What the user profile has:** favorite genre, favorite mood, preferred energy level, preferred happiness level (set to the middle if the user doesn't give one), and whether they like acoustic music.
 
-You can include a simple diagram or bullet list if helpful.
+**How songs are scored:**
+- Matching the favorite genre is worth the most points (2).
+- Energy is worth up to 1 point. The closer a song is to the user's preferred energy, the more points it gets.
+- Happiness works the same way and is also worth up to 1 point.
+- Acoustic songs get a small bonus (half a point) if the user likes acoustic music.
+
+Mood, tempo, and artist are stored but don't count toward the score. Energy and happiness already capture most of what mood and tempo describe, and artist could become a bonus later.
+
+**How songs are chosen:** The recommender scores every song, ranks them from best to worst, and shows the top 5, each with a short reason like "matches your genre; energy close to what you wanted."
+
 
 ---
 
