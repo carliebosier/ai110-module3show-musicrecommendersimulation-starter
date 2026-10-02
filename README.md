@@ -2,16 +2,7 @@
 
 ## Project Summary
 
-In this project you will build and explain a small music recommender system.
-
-Your goal is to:
-
-- Represent songs and a user "taste profile" as data
-- Design a scoring rule that turns that data into recommendations
-- Evaluate what your system gets right and wrong
-- Reflect on how this mirrors real world AI recommenders
-
-Replace this paragraph with your own summary of what your version does.
+This is a small content-based music recommender that runs from the command line. It loads 18 songs from `data/songs.csv` and scores each one against a user's taste profile (favorite genre, favorite mood, target energy, target valence, and whether they like acoustic music). It then prints the top five songs with a per-feature explanation of the points each one earned. I tested it on three realistic listener profiles and four adversarial edge cases to see where the scoring works and where it breaks.
 
 ---
 
@@ -56,7 +47,7 @@ Each song is scored on its own, one at a time. Sorting and picking the top K hap
 - **Genre is above mood (1.5 vs 1.0):** genre is a slightly steadier signal, but the gap is small. Both labels are rare in this catalog (15 genres and 14 moods across 18 songs).
 - **Acoustic is a sliding scale:** a song at 0.64 acousticness no longer gets the same bonus as one at 0.92.
 
-**Example (profile: lofi / chill / energy 0.40 / valence 0.55 / likes acoustic):** Library Rain scores 1.5 + 1.0 + 1.80 + 0.45 + 0.43 = **5.18**. The top results are Midnight Coding (5.27), Library Rain (5.18), Focus Flow (4.35), Spacewalk Thoughts (3.38), and Coffee Shop Stories (2.67). High-energy songs like Iron Furnace end up at the bottom, under 0.5 points.
+**Example (profile: lofi / chill / energy 0.40 / valence 0.55 / likes acoustic):** Library Rain scores 1.5 + 1.0 + 1.80 + 0.45 + 0.43 = **5.18**. The top results are Midnight Coding (5.27), Library Rain (5.18), Focus Flow (4.35), Spacewalk Thoughts (3.38), and Coffee Shop Stories (2.66). High-energy songs like Iron Furnace end up at the bottom, under 0.5 points.
 
 ### Expected biases
 
@@ -80,6 +71,7 @@ Each song is scored on its own, one at a time. Sorting and picking the top K hap
    python -m venv .venv
    source .venv/bin/activate      # Mac or Linux
    .venv\Scripts\activate         # Windows
+   ```
 
 2. Install dependencies
 
@@ -107,7 +99,7 @@ You can add more tests in `tests/test_recommender.py`.
 
 ## Sample Recommendation Output
 
-Paste a sample of your recommender's output here as a text block so a reader can see what it produces:
+Output of `python -m src.main` for all seven profiles:
 
 ```
 Loading songs from data/songs.csv...
