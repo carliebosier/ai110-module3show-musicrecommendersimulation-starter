@@ -17,21 +17,55 @@ Replace this paragraph with your own summary of what your version does.
 
 ## How The System Works
 
-Real-world platforms like Spotify and YouTube combine two approaches. Collaborative filtering uses the behavior of millions of users (likes, skips, replays) to recommend what similar people enjoyed. Content-based filtering compares the qualities of songs to what a user says they like. My version is a simple content-based recommender. It matches a user's taste profile against each song's qualities. Genre matters most. After that, songs score higher when their energy and mood are *close* to what the user wants, not just higher or lower.
+Real-world platforms like Spotify and YouTube combine two approaches. Collaborative filtering uses the behavior of millions of users (likes, skips, replays) to recommend what similar people enjoyed. Content-based filtering compares the qualities of songs to what a user says they like. My version is a simple content-based recommender. It matches a user's taste profile against each song's qualities. Songs score higher when their energy and happiness are *close* to what the user wants, not just higher or lower.
 
-**What each song has:** genre, mood, energy level, how acoustic it sounds, how happy or sad it feels, tempo, and artist.
+**What each song has:** genre, mood, energy level (0–1), happiness, or valence (0–1), how acoustic it sounds (0–1), tempo, danceability, and artist.
 
-**What the user profile has:** favorite genre, favorite mood, preferred energy level, preferred happiness level (set to the middle if the user doesn't give one), and whether they like acoustic music.
+**What the user profile has:** favorite genre, favorite mood, preferred energy level, preferred happiness level (set to the middle, 0.5, if the user doesn't give one), and whether they like acoustic music.
 
-**How songs are scored:**
-- Matching the favorite genre is worth the most points (2).
-- Energy is worth up to 1 point. The closer a song is to the user's preferred energy, the more points it gets.
-- Happiness works the same way and is also worth up to 1 point.
-- Acoustic songs get a small bonus (half a point) if the user likes acoustic music.
+### Data flow
 
-Mood, tempo, and artist are stored but don't count toward the score. Energy and happiness already capture most of what mood and tempo describe, and artist could become a bonus later.
+```mermaid
+flowchart LR
+    A["User prefs"] --> C{"For each song in songs.csv"}
+    C --> S["Score it with the recipe below<br/>and record the reasons"]
+    S --> C
+    S --> R["Sort all songs, highest score first"]
+    R --> K["Top K recommendations<br/>title · score · why"]
+```
 
-**How songs are chosen:** The recommender scores every song, ranks them from best to worst, and shows the top 5, each with a short reason like "matches your genre; energy close to what you wanted."
+Each song is scored on its own, one at a time. Sorting and picking the top K happen once, after every song has been scored.
+
+### Algorithm recipe
+
+| Feature | Rule | Max points |
+|---|---|---|
+| Genre | Exact match with the favorite genre | 1.5 |
+| Mood | Exact match with the favorite mood | 1.0 |
+| Energy | 2.0 × (1 − 2 × the gap between the song's energy and the target), never below 0 | 2.0 |
+| Happiness (valence) | 0.5 × (1 − 2 × the gap between the song's valence and the target), never below 0 | 0.5 |
+| Acoustic | 0.5 × the song's acousticness, only if the user likes acoustic music | 0.5 |
+| **Total** | | **5.5** |
+
+**Ranking:** sort by total score, highest first. If two songs tie, the one closer in energy wins. Each recommendation lists the points it earned per feature, for example "genre match (+1.5); energy very close (+1.8)."
+
+**Why these weights:**
+- **Steep closeness:** a song more than 0.5 away from a target gets 0 for that feature. With a plain "1 − gap" rule, even a metal song got most of the energy points for a chill listener, so every song scored at least about 1 point and the lower ranks were nearly tied.
+- **Energy counts the most of the number features (2.0):** it best separates calm songs from intense ones. A song that only matches on energy (2.0) can beat one that only matches on genre (1.5).
+- **Happiness counts little (0.5):** a middle target like 0.55 is close to many unrelated songs, so a high weight would push up songs with the wrong vibe (for example, rock at 0.91 energy).
+- **Genre is above mood (1.5 vs 1.0):** genre is a slightly steadier signal, but the gap is small. Both labels are rare in this catalog (15 genres and 14 moods across 18 songs).
+- **Acoustic is a sliding scale:** a song at 0.64 acousticness no longer gets the same bonus as one at 0.92.
+
+**Example (profile: lofi / chill / energy 0.40 / valence 0.55 / likes acoustic):** Library Rain scores 1.5 + 1.0 + 1.80 + 0.45 + 0.43 = **5.18**. The top results are Midnight Coding (5.27), Library Rain (5.18), Focus Flow (4.35), Spacewalk Thoughts (3.38), and Coffee Shop Stories (2.67). High-energy songs like Iron Furnace end up at the bottom, under 0.5 points.
+
+### Expected biases
+
+- **Exact labels miss near matches.** "chill" gets no credit for "relaxed," "peaceful," or "laid-back," and "pop" gets none for "indie pop." Great songs with a similar vibe can rank low because their label is spelled differently.
+- **Genre and mood can still outweigh fit.** A lofi song with the wrong energy can outrank a non-lofi song that fits the user's energy and mood almost perfectly.
+- **Popular genres in the catalog get better lists.** Lofi has 3 songs, while most genres have 1. A metal fan gets one real match, and the rest of their list is filler chosen only on energy and happiness.
+- **Acoustic only works one way.** Users who like acoustic music get a bonus, but users who dislike it get no penalty for acoustic songs, so their preference is ignored.
+- **Same artist repeats.** LoRoom has 2 of the top 3 for the lofi profile. Nothing in the recipe encourages variety.
+- **Some features are ignored.** Tempo and danceability are stored but not scored, so a user who cares about rhythm can't express it.
 
 
 ---

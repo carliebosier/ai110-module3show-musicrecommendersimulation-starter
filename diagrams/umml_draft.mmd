@@ -1,0 +1,17 @@
+flowchart TD
+    A["User prefs<br/>genre: lofi · mood: chill<br/>energy: 0.40 · valence: 0.55<br/>likes_acoustic: True"] --> C
+    B["songs.csv<br/>18 rows"] --> L["Load songs<br/>one dict per row, numbers converted to floats"]
+    L --> C{"For each song"}
+
+    C --> S1["Genre match? +1.5"]
+    C --> S2["Mood match? +1.0"]
+    C --> S3["Energy: 2.0 × max(0, 1 − 2×|0.40 − energy|)"]
+    C --> S4["Valence: 0.5 × max(0, 1 − 2×|0.55 − valence|)"]
+    C --> S5["Acoustic: 0.5 × acousticness, if likes_acoustic"]
+
+    S1 & S2 & S3 & S4 & S5 --> T["Add up points and keep the reasons<br/>(song, score, explanation)"]
+    T --> C
+
+    T --> R["After all songs: sort by score, highest first<br/>ties broken by energy closeness"]
+    R --> D["Optional: at most 1 song per artist in the top 3"]
+    D --> K["Output: top K songs<br/>title · score · why"]
