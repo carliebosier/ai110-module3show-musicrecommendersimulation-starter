@@ -110,28 +110,174 @@ You can add more tests in `tests/test_recommender.py`.
 Paste a sample of your recommender's output here as a text block so a reader can see what it produces:
 
 ```
-carliebosier@Carlies-MacBook-Air ai110-module3show-musicrecommendersimulation-starter % python3 -m src.main
 Loading songs from data/songs.csv...
 Loaded songs: 18
 
+============================================================
+Profile: High-Energy Pop
+Prefs:   {'genre': 'pop', 'mood': 'happy', 'energy': 0.85, 'valence': 0.8, 'likes_acoustic': False}
+============================================================
+
 Top recommendations:
 
-Sunrise City - Score: 4.58
-Because: genre match (+1.5); mood match (+1.0); energy very close (+1.9); valence far off (+0.2)
+Sunrise City - Score: 4.84
+Because: genre match (+1.5); mood match (+1.0); energy very close (+1.9); valence close (+0.5)
 
-Gym Hero - Score: 3.21
-Because: genre match (+1.5); mood mismatch: intense (+0.0); energy close (+1.5); valence far off (+0.2)
+Gym Hero - Score: 3.65
+Because: genre match (+1.5); mood mismatch: intense (+0.0); energy very close (+1.7); valence close (+0.5)
 
-Rooftop Lights - Score: 3.03
-Because: genre mismatch: indie pop (+0.0); mood match (+1.0); energy very close (+1.8); valence far off (+0.2)
+Rooftop Lights - Score: 3.13
+Because: genre mismatch: indie pop (+0.0); mood match (+1.0); energy very close (+1.6); valence close (+0.5)
 
-Concrete Crown - Score: 2.30
-Because: genre mismatch: hip-hop (+0.0); mood mismatch: confident (+0.0); energy very close (+1.9); valence close (+0.4)
+Concrete Crown - Score: 2.04
+Because: genre mismatch: hip-hop (+0.0); mood mismatch: confident (+0.0); energy very close (+1.7); valence close (+0.3)
 
-Night Drive Loop - Score: 2.29
-Because: genre mismatch: synthwave (+0.0); mood mismatch: moody (+0.0); energy very close (+1.8); valence close (+0.5)
+Storm Runner - Score: 1.94
+Because: genre mismatch: rock (+0.0); mood mismatch: intense (+0.0); energy very close (+1.8); valence far off (+0.2)
+```
 
-carliebosier@Carlies-MacBook-Air ai110-module3show-musicrecommendersimulation-starter % 
+```
+============================================================
+Profile: Chill Lofi
+Prefs:   {'genre': 'lofi', 'mood': 'chill', 'energy': 0.4, 'valence': 0.55, 'likes_acoustic': True}
+============================================================
+
+Top recommendations:
+
+Midnight Coding - Score: 5.27
+Because: genre match (+1.5); mood match (+1.0); energy very close (+1.9); valence close (+0.5); acoustic bonus (+0.4)
+
+Library Rain - Score: 5.18
+Because: genre match (+1.5); mood match (+1.0); energy very close (+1.8); valence close (+0.5); acoustic bonus (+0.4)
+
+Focus Flow - Score: 4.35
+Because: genre match (+1.5); mood mismatch: focused (+0.0); energy very close (+2.0); valence close (+0.5); acoustic bonus (+0.4)
+
+Spacewalk Thoughts - Score: 3.38
+Because: genre mismatch: ambient (+0.0); mood match (+1.0); energy close (+1.5); valence close (+0.4); acoustic bonus (+0.5)
+
+Coffee Shop Stories - Score: 2.66
+Because: genre mismatch: jazz (+0.0); mood mismatch: relaxed (+0.0); energy very close (+1.9); valence close (+0.3); acoustic bonus (+0.4)
+```
+
+```
+============================================================
+Profile: Deep Intense Rock
+Prefs:   {'genre': 'rock', 'mood': 'intense', 'energy': 0.92, 'valence': 0.4, 'likes_acoustic': False}
+============================================================
+
+Top recommendations:
+
+Storm Runner - Score: 4.88
+Because: genre match (+1.5); mood match (+1.0); energy very close (+2.0); valence close (+0.4)
+
+Gym Hero - Score: 3.09
+Because: genre mismatch: pop (+0.0); mood match (+1.0); energy very close (+2.0); valence far off (+0.1)
+
+Neon Tears - Score: 2.22
+Because: genre mismatch: edm (+0.0); mood mismatch: melancholic (+0.0); energy very close (+1.9); valence close (+0.3)
+
+Iron Furnace - Score: 2.12
+Because: genre mismatch: metal (+0.0); mood mismatch: aggressive (+0.0); energy very close (+1.8); valence close (+0.3)
+
+Night Drive Loop - Score: 1.73
+Because: genre mismatch: synthwave (+0.0); mood mismatch: moody (+0.0); energy close (+1.3); valence close (+0.4)
+```
+
+```
+============================================================
+Profile: Adversarial: Energetic but Sad
+Prefs:   {'genre': 'edm', 'mood': 'sad', 'energy': 0.9, 'valence': 0.1, 'likes_acoustic': False}
+============================================================
+
+Top recommendations:
+
+Neon Tears - Score: 3.82
+Because: genre match (+1.5); mood mismatch: melancholic (+0.0); energy very close (+2.0); valence close (+0.4)
+
+Iron Furnace - Score: 2.10
+Because: genre mismatch: metal (+0.0); mood mismatch: aggressive (+0.0); energy very close (+1.7); valence close (+0.4)
+
+Storm Runner - Score: 2.08
+Because: genre mismatch: rock (+0.0); mood mismatch: intense (+0.0); energy very close (+2.0); valence far off (+0.1)
+
+Gym Hero - Score: 1.88
+Because: genre mismatch: pop (+0.0); mood mismatch: intense (+0.0); energy very close (+1.9); valence far off (+0.0)
+
+Sunrise City - Score: 1.68
+Because: genre mismatch: pop (+0.0); mood mismatch: happy (+0.0); energy very close (+1.7); valence far off (+0.0)
+```
+
+```
+============================================================
+Profile: Adversarial: Case-Sensitive Genre
+Prefs:   {'genre': 'Pop', 'mood': 'Happy', 'energy': 0.8, 'valence': 0.8, 'likes_acoustic': False}
+============================================================
+
+Top recommendations:
+
+Sunrise City - Score: 2.38
+Because: genre mismatch: pop (+0.0); mood mismatch: happy (+0.0); energy very close (+1.9); valence close (+0.5)
+
+Rooftop Lights - Score: 2.33
+Because: genre mismatch: indie pop (+0.0); mood mismatch: happy (+0.0); energy very close (+1.8); valence close (+0.5)
+
+Concrete Crown - Score: 2.24
+Because: genre mismatch: hip-hop (+0.0); mood mismatch: confident (+0.0); energy very close (+1.9); valence close (+0.3)
+
+Lanterns on the Hill - Score: 2.02
+Because: genre mismatch: folk (+0.0); mood mismatch: euphoric (+0.0); energy very close (+1.6); valence close (+0.4)
+
+Night Drive Loop - Score: 1.99
+Because: genre mismatch: synthwave (+0.0); mood mismatch: moody (+0.0); energy very close (+1.8); valence far off (+0.2)
+```
+
+```
+============================================================
+Profile: Adversarial: Acoustic Headbanger
+Prefs:   {'genre': 'metal', 'mood': 'aggressive', 'energy': 0.95, 'valence': 0.2, 'likes_acoustic': True}
+============================================================
+
+Top recommendations:
+
+Iron Furnace - Score: 4.92
+Because: genre match (+1.5); mood match (+1.0); energy very close (+1.9); valence close (+0.5); acoustic bonus (+0.0)
+
+Neon Tears - Score: 2.24
+Because: genre mismatch: edm (+0.0); mood mismatch: melancholic (+0.0); energy very close (+1.8); valence close (+0.5); acoustic bonus (+0.0)
+
+Storm Runner - Score: 2.11
+Because: genre mismatch: rock (+0.0); mood mismatch: intense (+0.0); energy very close (+1.8); valence far off (+0.2); acoustic bonus (+0.1)
+
+Gym Hero - Score: 1.95
+Because: genre mismatch: pop (+0.0); mood mismatch: intense (+0.0); energy very close (+1.9); valence far off (+0.0); acoustic bonus (+0.0)
+
+Sunrise City - Score: 1.57
+Because: genre mismatch: pop (+0.0); mood mismatch: happy (+0.0); energy close (+1.5); valence far off (+0.0); acoustic bonus (+0.1)
+```
+
+```
+============================================================
+Profile: Adversarial: Out-of-Range Values
+Prefs:   {'genre': 'jazz', 'mood': 'relaxed', 'energy': 1.5, 'valence': -0.5, 'likes_acoustic': False}
+============================================================
+
+Top recommendations:
+
+Coffee Shop Stories - Score: 2.50
+Because: genre match (+1.5); mood match (+1.0); energy far off (+0.0); valence far off (+0.0)
+
+Iron Furnace - Score: 0.00
+Because: genre mismatch: metal (+0.0); mood mismatch: aggressive (+0.0); energy far off (+0.0); valence far off (+0.0)
+
+Gym Hero - Score: 0.00
+Because: genre mismatch: pop (+0.0); mood mismatch: intense (+0.0); energy far off (+0.0); valence far off (+0.0)
+
+Storm Runner - Score: 0.00
+Because: genre mismatch: rock (+0.0); mood mismatch: intense (+0.0); energy far off (+0.0); valence far off (+0.0)
+
+Neon Tears - Score: 0.00
+Because: genre mismatch: edm (+0.0); mood mismatch: melancholic (+0.0); energy far off (+0.0); valence far off (+0.0)
 ```
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->

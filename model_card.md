@@ -63,12 +63,7 @@ Prompts:
 
 Where the system struggles or behaves unfairly. 
 
-Prompts:  
-
-- Features it does not consider  
-- Genres or moods that are underrepresented  
-- Cases where the system overfits to one preference  
-- Ways the scoring might unintentionally favor some users  
+The system lets a song's energy override the genre a listener says they like. A close energy match can earn up to 2.0 points, while a genre match earns only 1.5, and songs far from the target energy earn nothing for energy. When I tried a pop/happy listener who wanted mellow music (energy 0.4), only Sunrise City made the top five, and only because its mood matched; the other four were calm lofi and jazz songs. Across 2,016 test profiles, the four calmest songs showed up in the top five for 35 to 47 percent of them, while the four loudest showed up for only 17 to 22 percent. As a result, the system quietly favors calm, acoustic music and can ignore a listener's stated genre.
 
 ---
 
@@ -76,14 +71,25 @@ Prompts:
 
 How you checked whether the recommender behaved as expected. 
 
-Prompts:  
+**Profiles tested.** I ran seven profiles. Three were realistic listeners: High-Energy Pop, Chill Lofi and Deep Intense Rock. Four were tricky edge cases meant to confuse the system: Energetic but Sad (asks for a mood that doesn't exist in the catalog), Case-Sensitive Genre (types "Pop" instead of "pop"), Acoustic Headbanger (wants metal-level energy but loves acoustic music), and Out-of-Range Values (energy 1.5 and valence -0.5). For each one I looked at whether the top five matched what that listener would expect.
 
-- Which user profiles you tested  
-- What you looked for in the recommendations  
-- What surprised you  
-- Any simple tests or comparisons you ran  
+**Why Gym Hero keeps showing up for Happy Pop listeners.** The catalog has only two pop songs, so a pop fan automatically gets the other one, Gym Hero, in the second slot. Gym Hero is also loud and upbeat, which is exactly what a High-Energy Pop listener asks for. Its mood is "intense" instead of "happy", so it loses one point, but it still beats every non-pop song. It appeared in five of the seven lists.
 
-No need for numeric metrics unless you created some.
+**What surprised me.**
+- A rock listener got Gym Hero, a pop song, in second place. It earned no genre points, but its mood label ("intense") matched and its energy was almost exact. Iron Furnace, a metal song that sounds closer to rock, came fourth because its label is "aggressive".
+- The "likes acoustic" setting barely mattered for the Acoustic Headbanger. The loudest songs in the catalog are almost never acoustic, so the bonus added at most 0.1 points.
+- The Out-of-Range profile still returned five songs, but four of them scored 0.00 and were just the loudest songs in the catalog.
+
+**Comparing profiles.**
+- **Pop vs. Chill Lofi:** no songs overlap. Pop gets loud, bright songs like Sunrise City, while Lofi gets calm, acoustic ones like Midnight Coding. That makes sense because the energy targets are 0.85 and 0.40.
+- **Pop vs. Deep Intense Rock:** both want loud music, so they share Gym Hero and Storm Runner. Pop puts Sunrise City first, and Rock puts Storm Runner first, which fits their genre and mood choices.
+- **Chill Lofi vs. Deep Intense Rock:** completely different lists, as expected for opposite ends of the energy range.
+- **Deep Intense Rock vs. Energetic but Sad:** four of five songs are the same. The word "sad" matches nothing, but the low valence target still pulls up the darkest loud songs, Neon Tears and Iron Furnace, into the top two.
+- **High-Energy Pop vs. Case-Sensitive Genre:** capitalizing "Pop" drops Sunrise City from 4.84 to 2.38, and Gym Hero vanishes from the list entirely. Gym Hero's place depended on the genre match, so without it a pop fan sees songs from other genres.
+- **Deep Intense Rock vs. Acoustic Headbanger:** four of five songs are the same. Adding "likes acoustic" changed almost nothing, so energy won the conflict.
+- **Chill Lofi vs. Out-of-Range Values:** Coffee Shop Stories ranks fifth for Lofi but first for the jazz listener with impossible numbers. That's because the genre and mood match are all that scored, and the rest of the list has no meaning. The system doesn't check whether inputs make sense.
+
+**Experiment: turning off the mood check.** For Deep Intense Rock, Gym Hero fell from second to fourth and Neon Tears and Iron Furnace moved up, which looks more accurate. For Chill Lofi, the order just changed, with Focus Flow taking first place, because the system could no longer tell "chill" from "focused". The Sad and Case-Sensitive profiles didn't change at all, since mood never matched in those lists. I restored the mood check afterward.
 
 ---
 
