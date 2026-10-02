@@ -110,12 +110,28 @@ You can add more tests in `tests/test_recommender.py`.
 Paste a sample of your recommender's output here as a text block so a reader can see what it produces:
 
 ```
-# e.g.:
-# User profile: genre=indie, mood=chill, energy=low
-# Recommendations:
-#   1. ...
-#   2. ...
-#   3. ...
+carliebosier@Carlies-MacBook-Air ai110-module3show-musicrecommendersimulation-starter % python3 -m src.main
+Loading songs from data/songs.csv...
+Loaded songs: 18
+
+Top recommendations:
+
+Sunrise City - Score: 4.58
+Because: genre match (+1.5); mood match (+1.0); energy very close (+1.9); valence far off (+0.2)
+
+Gym Hero - Score: 3.21
+Because: genre match (+1.5); mood mismatch: intense (+0.0); energy close (+1.5); valence far off (+0.2)
+
+Rooftop Lights - Score: 3.03
+Because: genre mismatch: indie pop (+0.0); mood match (+1.0); energy very close (+1.8); valence far off (+0.2)
+
+Concrete Crown - Score: 2.30
+Because: genre mismatch: hip-hop (+0.0); mood mismatch: confident (+0.0); energy very close (+1.9); valence close (+0.4)
+
+Night Drive Loop - Score: 2.29
+Because: genre mismatch: synthwave (+0.0); mood mismatch: moody (+0.0); energy very close (+1.8); valence close (+0.5)
+
+carliebosier@Carlies-MacBook-Air ai110-module3show-musicrecommendersimulation-starter % 
 ```
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->
