@@ -41,7 +41,7 @@ Each song is scored on its own, one at a time. Sorting and picking the top K hap
 **Ranking:** sort by total score, highest first. If two songs tie, the one closer in energy wins. Each recommendation lists the points it earned per feature, for example "genre match (+1.5); energy very close (+1.8)."
 
 **Why these weights:**
-- **Steep closeness:** a song more than 0.5 away from a target gets 0 for that feature. With a plain "1 − gap" rule, even a metal song got most of the energy points for a chill listener, so every song scored at least about 1 point and the lower ranks were nearly tied.
+- **Steep closeness:** a song more than 0.5 away from a target gets 0 for that feature. With a plain "1 − gap" rule, even a metal song got less than half of the energy points for a chill listener, so every song scored at least about 1 point and the lower ranks were nearly tied.
 - **Energy counts the most of the number features (2.0):** it best separates calm songs from intense ones. A song that only matches on energy (2.0) can beat one that only matches on genre (1.5).
 - **Happiness counts little (0.5):** a middle target like 0.55 is close to many unrelated songs, so a high weight would push up songs with the wrong vibe (for example, rock at 0.91 energy).
 - **Genre is above mood (1.5 vs 1.0):** genre is a slightly steadier signal, but the gap is small. Both labels are rare in this catalog (15 genres and 14 moods across 18 songs).
@@ -52,12 +52,11 @@ Each song is scored on its own, one at a time. Sorting and picking the top K hap
 ### Expected biases
 
 - **Exact labels miss near matches.** "chill" gets no credit for "relaxed," "peaceful," or "laid-back," and "pop" gets none for "indie pop." Great songs with a similar vibe can rank low because their label is spelled differently.
-- **Genre and mood can still outweigh fit.** A lofi song with the wrong energy can outrank a non-lofi song that fits the user's energy and mood almost perfectly.
+- **Energy can outweigh genre and mood.** Energy is worth up to 2.0 points, more than a genre match (1.5). A song with the right energy but the wrong genre can beat a song in the right genre with the wrong energy.
 - **Popular genres in the catalog get better lists.** Lofi has 3 songs, while most genres have 1. A metal fan gets one real match, and the rest of their list is filler chosen only on energy and happiness.
 - **Acoustic only works one way.** Users who like acoustic music get a bonus, but users who dislike it get no penalty for acoustic songs, so their preference is ignored.
 - **Same artist repeats.** LoRoom has 2 of the top 3 for the lofi profile. Nothing in the recipe encourages variety.
 - **Some features are ignored.** Tempo and danceability are stored but not scored, so a user who cares about rhythm can't express it.
-
 
 ---
 
@@ -82,7 +81,7 @@ pip install -r requirements.txt
 3. Run the app:
 
 ```bash
-python -m src.main
+python3 -m src.main
 ```
 
 ### Running Tests
@@ -90,7 +89,7 @@ python -m src.main
 Run the starter tests with:
 
 ```bash
-pytest
+python3 -m pytest
 ```
 
 You can add more tests in `tests/test_recommender.py`.
@@ -126,9 +125,8 @@ Because: genre mismatch: hip-hop (+0.0); mood mismatch: confident (+0.0); energy
 
 Storm Runner - Score: 1.94
 Because: genre mismatch: rock (+0.0); mood mismatch: intense (+0.0); energy very close (+1.8); valence far off (+0.2)
-```
 
-```
+
 ============================================================
 Profile: Chill Lofi
 Prefs:   {'genre': 'lofi', 'mood': 'chill', 'energy': 0.4, 'valence': 0.55, 'likes_acoustic': True}
@@ -150,9 +148,8 @@ Because: genre mismatch: ambient (+0.0); mood match (+1.0); energy close (+1.5);
 
 Coffee Shop Stories - Score: 2.66
 Because: genre mismatch: jazz (+0.0); mood mismatch: relaxed (+0.0); energy very close (+1.9); valence close (+0.3); acoustic bonus (+0.4)
-```
 
-```
+
 ============================================================
 Profile: Deep Intense Rock
 Prefs:   {'genre': 'rock', 'mood': 'intense', 'energy': 0.92, 'valence': 0.4, 'likes_acoustic': False}
@@ -174,9 +171,8 @@ Because: genre mismatch: metal (+0.0); mood mismatch: aggressive (+0.0); energy 
 
 Night Drive Loop - Score: 1.73
 Because: genre mismatch: synthwave (+0.0); mood mismatch: moody (+0.0); energy close (+1.3); valence close (+0.4)
-```
 
-```
+
 ============================================================
 Profile: Adversarial: Energetic but Sad
 Prefs:   {'genre': 'edm', 'mood': 'sad', 'energy': 0.9, 'valence': 0.1, 'likes_acoustic': False}
@@ -198,9 +194,8 @@ Because: genre mismatch: pop (+0.0); mood mismatch: intense (+0.0); energy very 
 
 Sunrise City - Score: 1.68
 Because: genre mismatch: pop (+0.0); mood mismatch: happy (+0.0); energy very close (+1.7); valence far off (+0.0)
-```
 
-```
+
 ============================================================
 Profile: Adversarial: Case-Sensitive Genre
 Prefs:   {'genre': 'Pop', 'mood': 'Happy', 'energy': 0.8, 'valence': 0.8, 'likes_acoustic': False}
@@ -222,9 +217,8 @@ Because: genre mismatch: folk (+0.0); mood mismatch: euphoric (+0.0); energy ver
 
 Night Drive Loop - Score: 1.99
 Because: genre mismatch: synthwave (+0.0); mood mismatch: moody (+0.0); energy very close (+1.8); valence far off (+0.2)
-```
 
-```
+
 ============================================================
 Profile: Adversarial: Acoustic Headbanger
 Prefs:   {'genre': 'metal', 'mood': 'aggressive', 'energy': 0.95, 'valence': 0.2, 'likes_acoustic': True}
@@ -246,9 +240,8 @@ Because: genre mismatch: pop (+0.0); mood mismatch: intense (+0.0); energy very 
 
 Sunrise City - Score: 1.57
 Because: genre mismatch: pop (+0.0); mood mismatch: happy (+0.0); energy close (+1.5); valence far off (+0.0); acoustic bonus (+0.1)
-```
 
-```
+
 ============================================================
 Profile: Adversarial: Out-of-Range Values
 Prefs:   {'genre': 'jazz', 'mood': 'relaxed', 'energy': 1.5, 'valence': -0.5, 'likes_acoustic': False}
@@ -278,25 +271,30 @@ Because: genre mismatch: edm (+0.0); mood mismatch: melancholic (+0.0); energy f
 
 ## Experiments You Tried
 
-Use this section to document the experiments you ran. For example:
+**1. Seven listener profiles.** I ran three realistic profiles (High-Energy Pop, Chill Lofi, Deep Intense Rock) and four edge cases (Energetic but Sad, Case-Sensitive Genre, Acoustic Headbanger, Out-of-Range Values). The realistic profiles gave sensible top songs. The edge cases showed the weak spots. A mood that isn't in the catalog never matches. Capitalizing "Pop" and "Happy" drops every genre and mood point. The acoustic bonus can't pull loud listeners toward quiet songs. Impossible numbers still return five songs, and four of them score 0.00.
 
-- What happened when you changed the weight on genre from 2.0 to 0.5
-- What happened when you added tempo or valence to the score
-- How did your system behave for different types of users
+**2. Turning off the mood check.** I commented out the +1.0 mood match, reran all seven profiles, and then restored it.
+
+| Profile | With mood | Without mood |
+|---|---|---|
+| Deep Intense Rock | Storm Runner 4.88, **Gym Hero 3.09**, Neon Tears 2.22, Iron Furnace 2.12, Night Drive Loop 1.73 | Storm Runner 3.88, Neon Tears 2.22, Iron Furnace 2.12, **Gym Hero 2.09**, Night Drive Loop 1.73 |
+| Chill Lofi | Midnight Coding 5.27, Library Rain 5.18, Focus Flow 4.35, Spacewalk Thoughts 3.38, Coffee Shop Stories 2.66 | **Focus Flow 4.35**, Midnight Coding 4.27, Library Rain 4.18, Coffee Shop Stories 2.66, Spacewalk Thoughts 2.38 |
+
+For the rock listener, the change looked more accurate. Gym Hero (a pop song) fell from second to fourth. For the lofi listener, the change was just different. Focus Flow took first place, and the system could no longer tell "chill" from "focused". The Sad and Case-Sensitive profiles did not change, because mood never matched in those lists.
+
+**3. A wide sweep.** I had my AI assistant run a throwaway script (not saved in the repo) on 2,016 profiles. It covered every genre plus a "no match" case, energy targets from 0.0 to 1.0, three valence targets, and acoustic on or off. The four calmest songs reached the top five for 35 to 47 percent of profiles. The four loudest reached it for only 17 to 22 percent. That is how I found that energy can override genre.
 
 ---
 
 ## Limitations and Risks
 
-Summarize some limitations of your recommender.
-
-Examples:
-
-- It only works on a tiny catalog
-- It does not understand lyrics or language
-- It might over favor one genre or mood
-
-You will go deeper on this in your model card.
+- **Tiny catalog.** There are 18 songs, and 13 of the 15 genres have only one song. A listener who likes one of those genres gets one real match and then fills in on energy and happiness.
+- **Energy can override genre.** Energy is worth up to 2.0 points and a genre match 1.5, so a listener who wants mellow music gets calm songs even if their favorite genre is loud.
+- **Exact labels.** "Pop" earns nothing for "indie pop", "chill" earns nothing for "relaxed", and capitalization breaks a match. A single mood label put Gym Hero second for a rock listener.
+- **The acoustic setting is weak and one-sided.** It only adds bonus points for acoustic songs. A listener who dislikes acoustic music gets no penalty for them.
+- **No input checks.** Values outside 0 to 1 are accepted, and the system returns songs with a score of 0.00 as recommendations.
+- **Missing information.** The system ignores lyrics, language, popularity, tempo, danceability and listening history. The songs are fictional.
+- **Risk if used for real.** It would quietly favor calm, acoustic music and hide good songs behind label spelling. It is a classroom model and should not decide what real listeners hear.
 
 ---
 
@@ -306,10 +304,8 @@ Read and complete `model_card.md`:
 
 [**Model Card**](model_card.md)
 
-Write 1 to 2 paragraphs here about what you learned:
+My biggest learning moment was realizing how much a single label or scoring weight can affect recommendations. Gym Hero, a pop song, ranked second for a rock listener because its mood matched. This showed me that even a simple algorithm can feel personalized, but its results depend heavily on the rules I choose.
 
-- about how recommenders turn data into predictions
-- about where bias or unfairness could show up in systems like this
+AI tools helped me generate songs, create test profiles, and test scenarios I couldn't easily check by hand. However, I still had to compare their explanations and suggestions with my actual terminal output because some claims about the acoustic bonus and song matches were inaccurate. This taught me that AI is useful for development, but its results still need to be verified.
 
-
-
+If I extended this project, I would expand the song catalog and test more listener profiles to see whether recommendations work fairly across different preferences. I would also adjust and test the scoring weights to make sure one matching feature doesn't outweigh the others too much.
