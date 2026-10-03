@@ -284,6 +284,21 @@ For the rock listener, the change looked more accurate. Gym Hero (a pop song) fe
 
 **3. A wide sweep.** I had my AI assistant run a throwaway script (not saved in the repo) on 2,016 profiles. It covered every genre plus a "no match" case, energy targets from 0.0 to 1.0, three valence targets, and acoustic on or off. The four calmest songs reached the top five for 35 to 47 percent of profiles. The four loudest reached it for only 17 to 22 percent. That is how I found that energy can override genre.
 
+**4. A mellow pop listener.** To check the energy bias directly, I ran a pop/happy profile with a low energy target (0.4). It isn't one of the profiles in `main.py`, so run it with:
+
+```bash
+python3 -c "
+from src.recommender import load_songs, recommend_songs
+songs = load_songs('data/songs.csv')
+prefs = {'genre': 'pop', 'mood': 'happy', 'energy': 0.4, 'valence': 0.8, 'likes_acoustic': False}
+for song, score, why in recommend_songs(prefs, songs):
+    print(song['title'], round(score, 2))
+"
+```
+
+Result: Sunrise City 3.28, Focus Flow 2.29, Coffee Shop Stories 2.29, Midnight Coding 2.18, Library Rain 2.10. Sunrise City is the only pop song left. Gym Hero is pop too, but it dropped out because its energy (0.93) is too far from 0.4. The other four are calm lofi and jazz songs.
+
+
 ---
 
 ## Limitations and Risks
